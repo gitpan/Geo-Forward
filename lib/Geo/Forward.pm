@@ -2,17 +2,23 @@ package Geo::Forward;
 
 =head1 NAME
 
-Geo::Forward - Calculate geographic location form lat, lon, distance, heading.
+Geo::Forward - Calculate geographic location from lat, lon, distance, and heading.
 
 =head1 SYNOPSIS
 
   use Geo::Forward;
-  my $object = Geo::Forward->new('WGS84');
-  my ($lat2,$lon2,$baz) = $object->forward($lon1,$lat1,$faz,$dist);
+  my $object = Geo::Forward->new(); # default "WGS-84"
+  my ($lat1,$lon1,$faz,$dist)=(38.871022, -77.055874, 62.888507083, 4565.6854);
+  my ($lat2,$lon2,$baz) = $object->forward($lat1,$lon1,$faz,$dist);
+  print "Input Lat: $lat1  Lon: $lon1\n";
+  print "Input Forward Azimuth: $faz\n";
+  print "Input Distance: $dist\n";
+  print "Output Lat: $lat2 Lon: $lon2\n";
+  print "Output Back Azimuth: $baz\n";
 
 =head1 DESCRIPTION
 
-This module is a pure perl port of the NGS program in the public domain "forward" by Robert (Sid) Safford and Stephen J. Frakes.  
+This module is a pure Perl port of the NGS program in the public domain "forward" by Robert (Sid) Safford and Stephen J. Frakes.  
 
 
 =cut
@@ -190,7 +196,7 @@ __END__
 
 =head1 LIMITS
 
-No garentees that perl handles all of the double percision calculations in the same manner.
+No guarantees that Perl handles all of the double precision calculations in the same manner as Fortran.
 
 =head1 AUTHOR
 
