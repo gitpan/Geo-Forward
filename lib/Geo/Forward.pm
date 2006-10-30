@@ -23,7 +23,7 @@ use constant PI => 2 * atan2(1, 0);
 use constant RAD => 180/PI;
 use constant DEFAULT_ELIPS => 'WGS84';
 
-$VERSION = sprintf("%d.%02d", q{Revision: 0.01} =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%02d", q{Revision: 0.02} =~ /(\d+)\.(\d+)/);
 
 =head1 METHODS
 

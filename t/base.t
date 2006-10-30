@@ -31,7 +31,7 @@ BEGIN {
     }
 }
 
-BEGIN { plan tests => 45 }
+BEGIN { plan tests => 5 }
 
 # just check that all modules can be compiled
 ok(eval {require Geo::Forward; 1}, 1, $@);
