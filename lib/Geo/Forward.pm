@@ -29,7 +29,7 @@ use constant PI => 2 * atan2(1, 0);
 use constant RAD => 180/PI;
 use constant DEFAULT_ELIPS => 'WGS84';
 
-$VERSION = sprintf("%d.%02d", q{Revision: 0.02} =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%02d", q{Revision: 0.06} =~ /(\d+)\.(\d+)/);
 
 =head1 METHODS
 
@@ -207,7 +207,7 @@ Michael R. Davis qw/perl michaelrdavis com/
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
-=SEE ALSO
+=head1 SEE ALSO
 
 Net::GPSD
 Geo::Spline
