@@ -3,8 +3,10 @@ WriteMakefile(
   NAME      => q{Geo::Forward},
   VERSION_FROM => q{lib/Geo/Forward.pm},
   PREREQ_PM => {
-                 strict       => 0,
-                 vars         => 0,
+                 strict            => 0,
+                 vars              => 0,
+                 constant          => 0,
+                 Geo::Ellipsoids   => 0.06, 
                },
                ($] >= 5.005 ? 
                  (

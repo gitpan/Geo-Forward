@@ -29,7 +29,7 @@ use constant PI => 2 * atan2(1, 0);
 use constant RAD => 180/PI;
 use constant DEFAULT_ELIPS => 'WGS84';
 
-$VERSION = sprintf("%d.%02d", q{Revision: 0.06} =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%02d", q{Revision: 0.07} =~ /(\d+)\.(\d+)/);
 
 =head1 METHODS
 
@@ -47,11 +47,15 @@ sub new {
 sub initialize {
   my $self = shift();
   my $param = shift();
-  if (ref($param)) {
-    $self->{'elips'}=$param;  #{a=>x,f=>x}
-  } else {
-    $self->{'elips'}=$self->elipslist($param||DEFAULT_ELIPS);
-  }
+  use Geo::Ellipsoids;
+  my $obj=Geo::Ellipsoids->new($param);
+  $self->ellipsoid($obj);
+}
+
+sub ellipsoid {
+  my $self = shift();
+  if (@_) { $self->{'ellipsoid'} = shift() }; #sets value
+  return $self->{'ellipsoid'};
 }
 
 sub forward {
@@ -62,20 +66,6 @@ sub forward {
   my $distance=shift(); #meters (or the units of the semi-major axis)
   my ($lat2, $lon2, $baz)= $self->dirct1($lat/RAD,$lon/RAD,$heading/RAD,$distance);
   return($lat2*RAD, $lon2*RAD, $baz*RAD);
-}
-
-sub elipslist {
-  my $self=shift();
-  my $param=shift();
-  my $elipslist = {
-    GRS80=>{a=>6378137,f=>1/298.25722210088},
-    WGS84=>{a=>6378137,f=>1/298.25722210088},
-    NAD83=>{a=>6378137,f=>1/298.25722210088},
-    'Clarke 1866'=>{a=>6378206.4,f=>1/294.9786982138},
-    Clarke=>{a=>6378206.4,f=>1/294.9786982138},
-    NAD27=>{a=>6378206.4,f=>1/294.9786982138},
-  };
-  return $elipslist->{$param} || die("$param undefined");
 }
 
 sub dirct1 {
@@ -104,8 +94,9 @@ sub dirct1 {
 #      IMPLICIT REAL*8 (A-H,O-Z)
 #      COMMON/CONST/PI,RAD
 #      COMMON/ELIPSOID/A,F
-       my $A=$self->{'elips'}->{'a'};
-       my $F=$self->{'elips'}->{'f'};
+       my $ellipsoid=$self->ellipsoid;
+       my $A=$ellipsoid->a;
+       my $F=$ellipsoid->f;
 #      DATA EPS/0.5D-13/
        my $EPS=0.5E-13;
 #      R=1.-F
@@ -212,3 +203,4 @@ it under the same terms as Perl itself.
 Net::GPSD
 Geo::Spline
 Geo::Ellipsoid
+Geo::Ellipsoids
