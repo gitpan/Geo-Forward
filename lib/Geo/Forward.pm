@@ -7,9 +7,9 @@ Geo::Forward - Calculate geographic location from lat, lon, distance, and headin
 =head1 SYNOPSIS
 
   use Geo::Forward;
-  my $object = Geo::Forward->new(); # default "WGS-84"
+  my $obj = Geo::Forward->new(); # default "WGS84"
   my ($lat1,$lon1,$faz,$dist)=(38.871022, -77.055874, 62.888507083, 4565.6854);
-  my ($lat2,$lon2,$baz) = $object->forward($lat1,$lon1,$faz,$dist);
+  my ($lat2,$lon2,$baz) = $obj->forward($lat1,$lon1,$faz,$dist);
   print "Input Lat: $lat1  Lon: $lon1\n";
   print "Input Forward Azimuth: $faz\n";
   print "Input Distance: $dist\n";
@@ -29,10 +29,16 @@ use constant PI => 2 * atan2(1, 0);
 use constant RAD => 180/PI;
 use constant DEFAULT_ELIPS => 'WGS84';
 
-$VERSION = sprintf("%d.%02d", q{Revision: 0.07} =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%02d", q{Revision: 0.08} =~ /(\d+)\.(\d+)/);
 
-=head1 METHODS
+=head1 CONSTRUCTOR
 
+=head2 new
+
+The new() constructor may be called with any parameter that is appropriate to the Geo::Ellipsoid->new() constructor which established the ellipsoid.
+
+  my $obj = Geo::Forward->new(); # default "WGS84"
+    
 =cut
 
 sub new {
@@ -44,7 +50,27 @@ sub new {
   return $self;
 }
 
+=head1 METHODS
+
+=cut
+
 sub initialize {
+  my $self = shift();
+  my $param = shift();
+  $self->set($param);
+}
+
+=head2 set
+
+Method sets the current ellipsoid.  This method is called when the object is constructed (default is WGS84).
+
+  $obj->set(); #default WGS84
+  $obj->set('Clarke 1866'); #Built in ellipsoids from Geo::Ellipsoid
+  $obj->set({a=>1});  #Custom Sphere 1 unit radius
+
+=cut
+
+sub set {
   my $self = shift();
   my $param = shift();
   use Geo::Ellipsoids;
@@ -52,11 +78,25 @@ sub initialize {
   $self->ellipsoid($obj);
 }
 
+=head2 ellipsoid
+
+Method to set or retrieve the current ellipsoid object the ellipsoid oject does not have to be Geo::Ellipsoid but it must be blessed and know $obj->a and $obj->f methods.
+
+=cut
+
 sub ellipsoid {
   my $self = shift();
   if (@_) { $self->{'ellipsoid'} = shift() }; #sets value
   return $self->{'ellipsoid'};
 }
+
+=head2 forward
+
+This method is the user frontend to the mathematics. This interface will not change in future versions.
+
+  my ($lat2,$lon2,$baz) = $obj->forward($lat1,$lon1,$faz,$dist);
+
+=cut
 
 sub forward {
   my $self=shift();
@@ -182,6 +222,8 @@ sub dirct1 {
 __END__
 
 =head1 TODO
+
+Add tests for more ellipsoids.
 
 =head1 BUGS
 
