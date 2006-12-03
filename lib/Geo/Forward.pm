@@ -25,20 +25,20 @@ This module is a pure Perl port of the NGS program in the public domain "forward
 
 use strict;
 use vars qw($VERSION);
-use constant PI => 2 * atan2(1, 0);
-use constant RAD => 180/PI;
+use Geo::Constants qw{PI};
+use Geo::Functions qw{deg_rad rad_deg};
 use constant DEFAULT_ELIPS => 'WGS84';
 
-$VERSION = sprintf("%d.%02d", q{Revision: 0.08} =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%02d", q{Revision: 0.09} =~ /(\d+)\.(\d+)/);
 
 =head1 CONSTRUCTOR
 
 =head2 new
 
-The new() constructor may be called with any parameter that is appropriate to the Geo::Ellipsoid->new() constructor which established the ellipsoid.
+The new() constructor may be called with any parameter that is appropriate to the Geo::Ellipsoids->new() constructor which establishes the ellipsoid.
 
   my $obj = Geo::Forward->new(); # default "WGS84"
-    
+
 =cut
 
 sub new {
@@ -65,7 +65,7 @@ sub initialize {
 Method sets the current ellipsoid.  This method is called when the object is constructed (default is WGS84).
 
   $obj->set(); #default WGS84
-  $obj->set('Clarke 1866'); #Built in ellipsoids from Geo::Ellipsoid
+  $obj->set('Clarke 1866'); #Built in ellipsoids from Geo::Ellipsoids
   $obj->set({a=>1});  #Custom Sphere 1 unit radius
 
 =cut
@@ -80,7 +80,7 @@ sub set {
 
 =head2 ellipsoid
 
-Method to set or retrieve the current ellipsoid object the ellipsoid oject does not have to be Geo::Ellipsoid but it must be blessed and know $obj->a and $obj->f methods.
+Method to set or retrieve the current ellipsoid object.  The ellipsoid object does not have to be Geo::Ellipsoids but it must be blessed and know $obj->a and $obj->f methods.
 
 =cut
 
@@ -104,8 +104,8 @@ sub forward {
   my $lon=shift();      #degrees
   my $heading=shift();  #degrees
   my $distance=shift(); #meters (or the units of the semi-major axis)
-  my ($lat2, $lon2, $baz)= $self->dirct1($lat/RAD,$lon/RAD,$heading/RAD,$distance);
-  return($lat2*RAD, $lon2*RAD, $baz*RAD);
+  my ($lat2, $lon2, $baz)= $self->dirct1(rad_deg($lat),rad_deg($lon),rad_deg($heading),$distance);
+  return(deg_rad($lat2),deg_rad($lon2), deg_rad($baz));
 }
 
 sub dirct1 {
@@ -236,6 +236,8 @@ No guarantees that Perl handles all of the double precision calculations in the 
 Michael R. Davis qw/perl michaelrdavis com/
 
 =head1 LICENSE
+
+Copyright (c) 2006 Michael R. Davis (mrdvt92)
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

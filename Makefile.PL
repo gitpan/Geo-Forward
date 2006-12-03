@@ -6,6 +6,8 @@ WriteMakefile(
                  strict            => 0,
                  vars              => 0,
                  constant          => 0,
+                 Geo::Constants    => 0.02, 
+                 Geo::Functions    => 0.02, 
                  Geo::Ellipsoids   => 0.06, 
                },
                ($] >= 5.005 ? 

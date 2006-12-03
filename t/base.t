@@ -28,18 +28,6 @@ sub near {
   }
 }
 
-sub dms2dd {
-  my $d=shift();
-  my $m=shift();
-  my $s=shift();
-  my $dir=shift()||'N';
-  my $val=$d+($m+$s/60)/60;
-  if ($dir eq 'W' or $dir eq 'S') {
-    return -$val;
-  } else {
-    return $val;
-  }
-}
 
 BEGIN {
     if (!eval q{
@@ -77,13 +65,23 @@ my @test=(
 #[qw{}],
 );
 
+sub deg_dms {
+  my $self=shift();
+  my $d=ref($self) ? shift()||0 : $self;
+  my $m=shift()||0;
+  my $s=shift()||0;
+  my $h=shift()||'N';
+  $h = ($h=~m/[SW]/i) ? -1 : 1;
+  return $h * ($d + ($m + $s/60)/60);
+}
+
 foreach (@test) {
-  my $lat1=dms2dd(@$_[0..3]);
-  my $lon1=dms2dd(@$_[4..7]);
-  my $lat2=dms2dd(@$_[8..11]);
-  my $lon2=dms2dd(@$_[12..15]);
-  my $faz=dms2dd(@$_[16..18]);
-  my $baz=dms2dd(@$_[19..21]);
+  my $lat1=deg_dms(@$_[0..3]);
+  my $lon1=deg_dms(@$_[4..7]);
+  my $lat2=deg_dms(@$_[8..11]);
+  my $lon2=deg_dms(@$_[12..15]);
+  my $faz=deg_dms(@$_[16..18]);
+  my $baz=deg_dms(@$_[19..21]);
   my $dist=$_->[22];
   my @data=$o->forward($lat1,$lon1,$faz,$dist);
   ok(near $data[0], $lat2);
