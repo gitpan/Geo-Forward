@@ -1,4 +1,12 @@
 package Geo::Forward;
+use strict;
+use warnings;
+use base qw{Package::New};
+use Geo::Constants qw{PI};
+use Geo::Functions qw{deg_rad rad_deg};
+use Geo::Ellipsoids qw{};
+
+our $VERSION="0.12";
 
 =head1 NAME
 
@@ -20,17 +28,6 @@ Geo::Forward - Calculate geographic location from lat, lon, distance, and headin
 
 This module is a pure Perl port of the NGS program in the public domain "forward" by Robert (Sid) Safford and Stephen J. Frakes.  
 
-
-=cut
-
-use strict;
-use vars qw($VERSION);
-use Geo::Constants qw{PI};
-use Geo::Functions qw{deg_rad rad_deg};
-use constant DEFAULT_ELIPS => 'WGS84';
-
-$VERSION = sprintf("%d.%02d", q{Revision: 0.11} =~ /(\d+)\.(\d+)/);
-
 =head1 CONSTRUCTOR
 
 =head2 new
@@ -39,30 +36,21 @@ The new() constructor may be called with any parameter that is appropriate to th
 
   my $obj = Geo::Forward->new(); # default "WGS84"
 
-=cut
-
-sub new {
-  my $this = shift();
-  my $class = ref($this) || $this;
-  my $self = {};
-  bless $self, $class;
-  $self->initialize(@_);
-  return $self;
-}
-
 =head1 METHODS
+
+=head2 initialize
 
 =cut
 
 sub initialize {
-  my $self = shift();
-  my $param = shift()||undef();
+  my $self  = shift;
+  my $param = shift || undef;
   $self->ellipsoid($param);
 }
 
 =head2 ellipsoid
 
-Method to set or retrieve the current ellipsoid object.  The ellipsoid is a Geo::Ellipsoids object.
+Method to set or retrieve the current ellipsoid object.  The ellipsoid is a L<Geo::Ellipsoids> object.
 
   my $ellipsoid=$obj->ellipsoid;  #Default is WGS84
 
@@ -72,12 +60,10 @@ Method to set or retrieve the current ellipsoid object.  The ellipsoid is a Geo:
 =cut
 
 sub ellipsoid {
-  my $self = shift();
+  my $self=shift;
   if (@_) {
-    my $param=shift();
-    use Geo::Ellipsoids;
-    my $obj=Geo::Ellipsoids->new($param);
-    $self->{'ellipsoid'}=$obj;
+    my $param=shift;
+    $self->{'ellipsoid'}=Geo::Ellipsoids->new($param);
   }
   return $self->{'ellipsoid'};
 }
@@ -88,25 +74,26 @@ This method is the user frontend to the mathematics. This interface will not cha
 
   my ($lat2,$lon2,$baz) = $obj->forward($lat1,$lon1,$faz,$dist);
 
+Note: Latitude and longitude units are signed decimal degrees.   The distance units are based on the ellipsoid semi-major axis which is meters for WGS-84.  The forward and backward azimuths units are signed degrees clockwise from North.
+
 =cut
 
 sub forward {
-  my $self=shift();
-  my $lat=shift();      #degrees
-  my $lon=shift();      #degrees
-  my $heading=shift();  #degrees
-  my $distance=shift(); #meters (or the units of the semi-major axis)
-  my ($lat2, $lon2, $baz)= $self->dirct1(rad_deg($lat),rad_deg($lon),rad_deg($heading),$distance);
-  return(deg_rad($lat2),deg_rad($lon2), deg_rad($baz));
+  my $self     = shift;
+  my $lat      = shift; #degrees
+  my $lon      = shift; #degrees
+  my $heading  = shift; #degrees
+  my $distance = shift; #meters (or the units of the semi-major axis)
+  my ($lat2, $lon2, $baz)= $self->_dirct1(rad_deg($lat),rad_deg($lon),rad_deg($heading),$distance);
+  return(deg_rad($lat2), deg_rad($lon2), deg_rad($baz));
 }
 
-sub dirct1 {
-  my $self=shift();  #provides A and F
-  my $GLAT1=shift(); #radians
-  my $GLON1=shift(); #radians
-  my $FAZ=shift();   #radians
-  my $S=shift();     #units of semi-major axis (default meters)
-
+sub _dirct1 {
+  my $self  = shift; #provides A and F
+  my $GLAT1 = shift; #radians
+  my $GLON1 = shift; #radians
+  my $FAZ   = shift; #radians
+  my $S     = shift; #units of semi-major axis (default meters)
 
 #      SUBROUTINE DIRCT1(GLAT1,GLON1,GLAT2,GLON2,FAZ,BAZ,S)
 #C
@@ -209,17 +196,17 @@ sub dirct1 {
 #      END
 }
 
-1;
-
-__END__
-
 =head1 TODO
 
 Add tests for more ellipsoids.
 
 =head1 BUGS
 
-Please send to the geo-perl email list.
+Please log on RT and email to the geo-perl email list as well as the author.
+
+=head1 SUPPORT
+
+DavisNetworks.com supports all Perl applications including this package.
 
 =head1 LIMITS
 
@@ -227,18 +214,29 @@ No guarantees that Perl handles all of the double precision calculations in the 
 
 =head1 AUTHOR
 
-Michael R. Davis qw/perl michaelrdavis com/
+  Michael R. Davis qw/perl michaelrdavis com/
+  CPAN ID: MRDVT
 
 =head1 LICENSE
 
-Copyright (c) 2006 Michael R. Davis (mrdvt92)
+Copyright (c) 2011 Michael R. Davis (mrdvt92)
 
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
+This library is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
 
 =head1 SEE ALSO
 
-Net::GPSD
-Geo::Spline
-Geo::Ellipsoid
-Geo::Ellipsoids
+=head3 Similar Packages
+
+L<Geo::Distance>, L<Geo::Ellipsoid>
+
+=head2 Opposite Packages
+
+L<Geo::Inverse>
+
+=head2 Building Blocks
+
+L<Geo::Ellipsoids>, L<Geo::Constants>, L<Geo::Functions>
+
+=cut
+
+1;
