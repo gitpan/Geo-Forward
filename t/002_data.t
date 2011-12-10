@@ -2,6 +2,7 @@
 use strict;
 use warnings;
 use Test::More tests => 17;
+use Geo::Functions qw{deg_dms};
 
 BEGIN { use_ok( 'Geo::Forward' ); }
 my $gf = Geo::Forward->new;
@@ -32,16 +33,6 @@ foreach (@test) {
   ok(near($data[0], $lat2), "lat");
   ok(near($data[1], $lon2), "lon");
   ok(near($data[2], $baz ), "baz");
-}
-
-sub deg_dms {
-  my $self=shift();
-  my $d=ref($self) ? shift()||0 : $self;
-  my $m=shift()||0;
-  my $s=shift()||0;
-  my $h=shift()||'N';
-  $h = ($h=~m/[SW]/i) ? -1 : 1;
-  return $h * ($d + ($m + $s/60)/60);
 }
 
 sub near {

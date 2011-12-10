@@ -1,5 +1,11 @@
 Revision history for Perl module Geo-Forward
 
+0.13 2011-12-09
+  - Update Makefile.PL to add Package::New - RT 72236 - andk@cpan.org 
+
+0.12-5 2011-10-31
+  - Updated t/002_data.t to use deg_dms from Geo::Functions
+
 0.12 2011-10-30
   - Added base of Package::New
   - Added example script

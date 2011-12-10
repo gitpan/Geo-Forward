@@ -8,5 +8,6 @@ WriteMakefile(
                  'Geo::Constants'    => 0.04, 
                  'Geo::Functions'    => 0.03, 
                  'Geo::Ellipsoids'   => 0.09, 
+                 'Package::New'      => 0,
                },
              );

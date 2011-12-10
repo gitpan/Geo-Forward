@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                Geo-Forward
-version:             0.12
+version:             0.13
 abstract:            Calculate geographic location from lat, lon, distance, and heading.
 license:             ~
 author:              ~
@@ -10,6 +10,7 @@ requires:
     Geo::Constants:                0.04
     Geo::Ellipsoids:               0.09
     Geo::Functions:                0.03
+    Package::New:                  0
     Test::Simple:                  0.44
 meta-spec:
     url:     http://module-build.sourceforge.net/META-spec-v1.3.html
