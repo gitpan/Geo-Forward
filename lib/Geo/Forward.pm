@@ -2,11 +2,11 @@ package Geo::Forward;
 use strict;
 use warnings;
 use base qw{Package::New};
-use Geo::Constants qw{PI};
-use Geo::Functions qw{deg_rad rad_deg};
-use Geo::Ellipsoids qw{};
+use Geo::Constants 0.04 qw{PI};
+use Geo::Functions 0.03 qw{deg_rad rad_deg};
+use Geo::Ellipsoids 0.09 qw{};
 
-our $VERSION="0.13";
+our $VERSION="0.14";
 
 =head1 NAME
 

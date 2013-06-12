@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                Geo-Forward
-version:             0.13
+version:             0.14
 abstract:            Calculate geographic location from lat, lon, distance, and heading.
 license:             ~
 author:              ~
